@@ -1,0 +1,46 @@
+ul li a{
+    font-size: 13px;
+}
+.ui-header {
+    min-height : 50px;
+}
+.ui-footer {
+    min-height: 20px;
+}
+
+a{
+    text-decoration: none;
+}
+#logDocBtn , #logPatBtn{
+    height: 90px;
+    width: 100%;
+    color: #fff;
+    /*text-align: center;*/
+    padding-top: 50px;
+    margin-bottom: 20px;
+}
+
+#logDocBtn span, #logPatBtn span{
+    font-size: 30px;
+}
+
+#logDocBtn{
+    background-color: #447799;
+}
+#logPatBtn{
+    background-color: #aacccc;
+}
+
+.title{
+    font-weight: bold;
+    font-size: 25px;
+}
+#login-pat span, #login-doc span{
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.errorLogin{
+    font-weight: bold;
+    color: #f00;
+}

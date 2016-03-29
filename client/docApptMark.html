@@ -1,0 +1,39 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div data-role="page" data-add-back-btn="true" id="docApptMark">
+		<script type="text/javascript">
+			$("#docApptMark").bind('pageinit', function(){
+				$("#delApptBtn").bind('tap', function(){
+					$.mobile.showPageLoadingMsg();
+					$.ajax({
+						type: "GET",
+						url: "http://ampliovita-service.appspot.com/deleteAppt",
+						data: {appointmentId: $("#currentSelectedAppt").val()},
+						async: false,
+			    		success: function(data){
+			    		$.mobile.hidePageLoadingMsg();
+			    			console.log("am trimis: ");
+			    			console.log($("#currentSelectedAppt").val());
+			    			if(data.status){
+			    				$.mobile.changePage("docAppt.html", {transition: "slide"});
+			    			}
+						},
+						error: function(faiulre){
+                   			$.mobile.hidePageLoadingMsg();
+               			}
+					});
+				});
+			});
+			
+		</script>
+		<div data-role="header"></div>
+		<div data-role="content" style="text-align: center">
+			<h3>Mark appointment as resolved?</h3>
+			<input type="button" value="OK" id="delApptBtn"/>
+		</div>
+	</div>
+</body>
+</html>

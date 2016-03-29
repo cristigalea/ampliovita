@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	
+    <!-- ***************************************** -->
+	<!-- ***************************************** -->
+	<!-- *                 SERVLETS              * -->
+	<!-- ***************************************** -->
+	<!-- ***************************************** -->
+
+	<!-- ******************* -->
+	<!-- * utils - create  * -->
+	<!-- ******************* -->
+	
+	<servlet>
+		<servlet-name>CreatePatientServlet</servlet-name>
+		<servlet-class>ampliovita.utils.create.CreatePatientServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>CreateDoctorServlet</servlet-name>
+		<servlet-class>ampliovita.utils.create.CreateDoctorServlet</servlet-class>
+	</servlet>
+	
+	<!-- *********************** -->
+	<!-- * utils - interogate  * -->
+	<!-- *********************** -->
+	
+	<servlet>
+		<servlet-name>ListAllPatientsServlet</servlet-name>
+		<servlet-class>ampliovita.utils.interogate.ListAllPatientsServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>ListAllDoctorsServlet</servlet-name>
+		<servlet-class>ampliovita.utils.interogate.ListAllDoctorsServlet</servlet-class>
+	</servlet>
+	
+	<!-- ************************ -->
+	<!-- * webservice - doctor  * -->
+	<!-- ************************ -->
+	
+	<servlet>
+		<servlet-name>LoginDoctorServlet</servlet-name>
+		<servlet-class>ampliovita.webservice.doctor.LoginDoctorServlet</servlet-class>
+	</servlet>
+	
+	<!-- ************************* -->
+	<!-- * webservice - patient  * -->
+	<!-- ************************* -->
+	
+	<servlet>
+		<servlet-name>LoginPatientServlet</servlet-name>
+		<servlet-class>ampliovita.webservice.patient.LoginPatientServlet</servlet-class>
+	</servlet>
+
+	<!-- ************************************************* -->
+	<!-- ************************************************* -->
+	<!-- *                 SERVLET MAPPINGS              * -->
+	<!-- ************************************************* -->
+	<!-- ************************************************* -->
+
+	<!-- ******************* -->
+	<!-- * utils - create  * -->
+	<!-- ******************* -->
+	
+	<servlet-mapping>
+		<servlet-name>CreatePatientServlet</servlet-name>
+		<url-pattern>/createPatient</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CreateDoctorServlet</servlet-name>
+		<url-pattern>/createDoctor</url-pattern>
+	</servlet-mapping>
+	
+	<!-- *********************** -->
+	<!-- * utils - interogate  * -->
+	<!-- *********************** -->
+	
+	<servlet-mapping>
+		<servlet-name>ListAllPatientsServlet</servlet-name>
+		<url-pattern>/listAllPatients</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ListAllDoctorsServlet</servlet-name>
+		<url-pattern>/listAllDoctors</url-pattern>
+	</servlet-mapping>
+	
+	<!-- ************************ -->
+	<!-- * webservice - doctor  * -->
+	<!-- ************************ -->
+	
+	<servlet-mapping>
+		<servlet-name>LoginDoctorServlet</servlet-name>
+		<url-pattern>/loginDoctor</url-pattern>
+	</servlet-mapping>
+	
+	<!-- ************************* -->
+	<!-- * webservice - patient  * -->
+	<!-- ************************* -->
+	
+	<servlet-mapping>
+		<servlet-name>LoginPatientServlet</servlet-name>
+		<url-pattern>/loginPatient</url-pattern>
+	</servlet-mapping>
+
+	<!-- ************************************************* -->
+	<!-- ************************************************* -->
+	<!-- *                      OTHERS                   * -->
+	<!-- ************************************************* -->
+	<!-- ************************************************* -->
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	<servlet>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+		<init-param>
+			<param-name>services</param-name>
+			<param-value/>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<url-pattern>/_ah/spi/*</url-pattern>
+	</servlet-mapping>
+</web-app>

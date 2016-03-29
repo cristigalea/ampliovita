@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+        <link rel="stylesheet" href="lib/jquery-mobile/jquery-mobile.css" />
+        <link rel="stylesheet" href="css/main.css" />
+
+        <script src="lib/jquery/jquery.js"></script>
+        <script src="lib/jquery-mobile/jquery-mobile.js"></script>
+        <script type="text/javascript" src="lib/moment/moment.min.js"></script>
+
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" src="http://jquery-ui-map.googlecode.com/svn/trunk/ui/min/jquery.ui.map.full.min.js"></script>
+
+        <title>Ampliovita</title>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+        $(document).bind('keydown', function(event) {
+            if (event.keyCode == 27) { // Prevent default (disable the back button behavior)
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        function loginDoc(username, password){
+            var statusLogin = false;
+            $.mobile.showPageLoadingMsg();
+            $.ajax({
+                type: "GET",
+                url: "http://ampliovita-service.appspot.com/loginDoctor",
+                data: {username: username, password: password},
+                async: false,
+                success: function(data){
+                    $.mobile.hidePageLoadingMsg();
+                    if(data.login == "valid"){
+                        statusLogin = true;
+                    }else{
+                        statusLogin = false;
+                    }
+                },
+                error: function(faiulre){
+                    $.mobile.hidePageLoadingMsg();
+                }
+            });
+            return statusLogin;
+        };
+
+        function loginPat(username, password){
+        	var statusLogin = false;
+        	$.mobile.showPageLoadingMsg();
+            $.ajax({
+                type: "GET",
+                url: "http://ampliovita-service.appspot.com/loginPatient",
+                data: {username: username, password: password},
+                async: false,
+                success: function(data){
+                    $.mobile.hidePageLoadingMsg();
+                    if(data.login == "valid"){
+                        statusLogin = true;
+                    }else{
+                        statusLogin = false;
+                    }
+                },
+                error: function(faiulre){
+                    $.mobile.hidePageLoadingMsg();
+                }
+            });
+            return statusLogin;
+        }
+
+        $(document).bind('pageinit', function(){ //equivalent of document ready
+             $(document).bind('backbutton',function(e){
+                 $.mobile.changePage( "index.html", { transition: "slide"} );
+             });
+            //setup for doctor login dialog
+            $("#login-doc").bind('pagecreate', function(){
+                $.mobile.loading(
+                    'show',
+                    {
+                        text: 'loading',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    }
+                );
+            }).bind('pageinit',function(){
+                $(".errorLogin").hide();
+                $.mobile.loading("hide");
+                $("#login-doc-btn").bind('tap', function(){
+                    if(loginDoc( $("#username-doc").val() , $("#pass-doc").val())){
+                        $("#currentLogedDoctorId").val($("#username-doc").val());
+                        $(".errorLogin").hide();
+                        $("#username-doc").val("");
+                        $("#pass-doc").val("");
+                        //$("#login-doc").dialog("close");
+                        $.mobile.changePage( "docHome.html", { transition: "slide"} );
+                    }else{
+                        $(".errorLogin").show();
+                    }
+                });
+            });
+
+            //setup for patient login dialog
+            $("#login-pat").bind('pagecreate', function(){
+                $.mobile.loading(
+                    'show',
+                    {
+                        text: 'loading',
+                        textVisible: true,
+                        theme: 'z',
+                        html: ""
+                    }
+                );
+            }).bind('pageinit',function(){
+                $(".errorLogin").hide();
+                $.mobile.loading("hide");
+                $("#login-pat-btn").bind('tap', function(){
+                    if(loginPat( $("#username-pat").val() , $("#pass-pat").val())){
+                        $("#currentLogedPatientId").val($("#username-pat").val());
+                        $(".errorLogin").hide();
+                        $("#username-pat").val("");
+                        $("#pass-pat").val("");
+                        $.mobile.changePage( "patHome.html", {transition: "slide"} );
+                    }else{
+                        $(".errorLogin").show();
+                    }
+                });
+            });
+        });
+    </script>
+
+    <div data-role="page" data-theme="a" id="home">
+        <div data-role="header" data-theme="d"  >
+            <input type="hidden" value="" id="currentLogedPatientId" />
+            <input type="hidden" value="" id="currentLogedDoctorId" />
+            <input type="hidden" value="" id="currentSelectedAppt" />
+            <input type="hidden" value="" id="currentSelectedTreat" />
+            <h1>AMPLIOVITA</h1>
+        </div>
+        <div data-role="content">
+            <a href="#login-doc" data-transition="slide">
+                <div id="logDocBtn">
+                    <div style="float: left">
+                        <img src="images/doctor-icon.png" style="margin-top: -20px;"/>
+                    </div>
+                    <span>Doctors</span>
+                </div>
+            </a>
+            <a href="#login-pat" data-transition="slide">
+                <div id="logPatBtn">
+                    <div style="float: left">
+                        <img src="images/patient-icon.png"/>
+                    </div>
+                    <span>Patients</span>
+                </div>
+            </a>
+        </div>
+        <div data-role="footer"  data-position="fixed"   data-theme="d">
+            <h4>Licenta Galea Cristian</h4>
+        </div>
+    </div>
+    <div data-role="page" data-add-back-btn="true" id="login-doc">
+        <div data-role="header"></div>
+        <div data-role="content">
+            <p class="title">Login doctor</p>
+            <p class="errorLogin">Login failed. Try again.</p>
+            <span>Username:</span><input type="text" id="username-doc" />
+            <span>Password:</span><input type="password" id="pass-doc" />
+            <br />
+            <input type="button" value="Login" id="login-doc-btn"/>
+        </div>
+    </div>
+    <div data-role="page" data-add-back-btn="true" id="login-pat">
+        <div data-role="header"></div>
+        <div data-role="content">
+            <p class="title">Login patient</p>
+            <p class="errorLogin">Login failed. Try again.</p>
+            <span>Username:</span><input type="text" id="username-pat" />
+            <span>Password:</span><input type="password" id="pass-pat" />
+            <br />
+            <input type="button" value="Login" id="login-pat-btn"/>
+        </div>
+    </div>
+    </body>
+</html>

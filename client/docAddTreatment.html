@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div data-role="page" data-theme="d" id="docAddTreatment">
+		<script type="text/javascript">
+			$("#docAddTreatment").bind('pageinit', function(){
+				$.mobile.showPageLoadingMsg();
+				$.ajax({ //call for getting the patient list
+					type: "GET",
+					url: "http://ampliovita-service.appspot.com/getPatientsList",
+					async: false,
+					data: {},
+					success: function(data){
+						var markup = "";
+						for(var i = 0; i < data.length; i++){
+							markup +='<option value="'+data[i].username+'">'+data[i].name+'</option>';
+						}
+						$("#addTreat-patient").html(markup);
+						$.mobile.hidePageLoadingMsg();
+					},
+					error: function(faiulre){
+						console.log(faiulre.responseText);
+                    	$.mobile.hidePageLoadingMsg();
+					}
+				});
+
+				$("#addTreat-btn").bind('tap', function(){
+					var allFilled = true;
+
+					if(allFilled && $("#addTreat-patient").val().trim() == "0"){
+						allFilled = false;
+					}else if(allFilled && $("#addTreat-datetime").val().trim() == ""){
+						allFilled = false;	
+					}else if(allFilled && $("#addTreat-duration").val().trim() == "0"){
+						allFilled = false;	
+					}else if(allFilled && $("#addTreat-meds").val().trim() == ""){
+						allFilled = false;	
+					}else if(allFilled && $("#addTreat-dosage").val().trim() == ""){
+						allFilled = false;	
+					}else if(allFilled && $("#addTreat-diagnosis").val().trim() == ""){
+						allFilled = false;	
+					}
+
+
+					if(!allFilled){
+						$.mobile.changePage( "patApptCreateSelectError.html", { role: "dialog", transition: "pop" } );
+					}else{
+						if($("#addTreat-meds").val().trim().split(',').length != $("#addTreat-dosage").val().trim().split(',').length){
+							$.mobile.changePage( "docAddTreatmentMedsError.html", { role: "dialog", transition: "pop" } );
+						}else{
+							//submit treatment
+							$.mobile.showPageLoadingMsg();
+							$.ajax({
+								type: "GET",
+								url: "http://ampliovita-service.appspot.com/createTreatment",
+								async: false,
+								data: {patientId: $("#addTreat-patient").val(), doctorId: $("#currentLogedDoctorId").val().trim(), duration: $("#addTreat-duration").val().trim(), datetime: moment.utc($("#addTreat-datetime").val().trim()).format("L hh:mm A"), meds: $("#addTreat-meds").val().trim(), dosages: $("#addTreat-dosage").val().trim(), diagnosis: $("#addTreat-diagnosis").val().trim() },
+								success: function(data){
+									if(data.status){
+										$.mobile.hidePageLoadingMsg();
+										$.mobile.changePage( "docViewTreatments.html", { transition: "slide" } );
+									}else{
+										$.mobile.hidePageLoadingMsg();
+									}
+								},
+								error: function(faiulre){
+									console.log(faiulre.responseText);
+                    				$.mobile.hidePageLoadingMsg();
+								}
+							});
+						}
+					}
+
+				});
+
+			});
+		</script>
+		<div data-role="panel" data-display="reveal" id="docMenu">
+			<div class="ui-panel-inner">
+				<ul data-role="listview" data-inset="true" data-icon="false">
+    				<li><a href="docHome.html" data-transition="slide">Doctor Home</a></li>
+    				<li><a href="docAppt.html" data-transition="slide">Appointments</a></li>
+    				<li><a href="docHistory.html" data-transition="slide">History</a></li>
+    				<li><a href="docViewTreatments.html" data-transition="slide">View treatments</a></li>
+				</ul>
+			</div>
+		</div>
+		<div data-role="header" data-theme="d">
+			<a href="#docMenu" data-icon="bars" data-iconpos="notext" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a"><span class="ui-btn-inner"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-bars ui-icon-shadow">&nbsp;</span></span></a>
+			<h1>AMPLIOVITA</h1>
+		</div>
+		<div data-role="content" style="text-align: center">
+			<h4>Add treatment</h4>
+
+			<label for="addTreat-patient">Patient</label>
+			<select name="addTreat-patient" id="addTreat-patient">
+				<option selected="selected" value="0">choose</option>
+			</select>
+
+			<label for="addTreat-datetime">Date and Time</label>
+			<input type="datetime-local" data-clear-btn="true" name="addTreat-datetime" id="addTreat-datetime" value="" />
+
+			<label for="addTreat-diagnosis">Diagnosis</label>
+			<input type="text" name="addTreat-diagnosis" id="addTreat-diagnosis" data-clear-btn="true" value="" />
+
+			<label for="addTreat-duration">Duration (days)</label>
+			<input type="number" name="addTreat-duration" id="addTreat-duration" data-clear-btn="true" value="1" />
+
+			<label for="addTreat-meds">Medication</label>
+			<input type="text" name="addTreat-meds" id="addTreat-meds" data-clear-btn="true"  value="" />
+
+			<label for="addTreat-dosage">Dosage</label>
+			<input type="text" name="addTreat-dosage" id="addTreat-dosage"  data-clear-btn="true" value="" />
+
+			<input type="button" id="addTreat-btn" value="Add" data-theme="a" />
+		</div>
+		</div>
+		 <div data-role="footer" data-position="fixed" data-theme="d">
+			<h4>Licenta Galea Cristian</h4>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Create Patient</title>
+
+<style type="text/css">
+	form span{
+		margin-right: 10px;
+	}
+</style>
+
+</head>
+<body>
+	<h1>Create Patient</h1>
+	<br/>
+	<a href="index.html">Back to dashboard</a>
+	<br/>
+	<form method="get" action="/createPatient">
+		<span>First Name</span>
+		<input type="text" value="" name="firstname"/>
+		<br/>
+		<span>Last Name</span>
+		<input type="text" value="" name="lastname"/>
+		<br/>
+		<span>Date of Birth</span>
+		<input type="text" value="" name="dob"/>
+		<br/>
+		<span>Username</span>
+		<input type="text" value="" name="username"/>
+		<br/>
+		<span>Password</span>
+		<input type="text" value="" name="password"/>
+		<br/>
+		<input type="submit" value="Create Patient" />
+	</form>
+</body>
+</html>

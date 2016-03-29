@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div data-role="page" data-theme="d" id="patLocations">
+		<script type="text/javascript">
+			$("#patLocations").bind('pageinit', function() { 
+				console.log("a intrat");
+				var mapdata = { destination: new google.maps.LatLng(46.771879, 23.596333) };
+				$.mobile.showPageLoadingMsg();
+				$.ajax({
+					type: "GET",
+					url: "http://ampliovita-service.appspot.com/getLocations",
+					async: false,
+					data: {},
+					success: function(data){
+						console.log("e bun");
+						$('#map_canvas').gmap({'center' : mapdata.destination}).bind('init', function(ev,map){
+							for(var i = 0; i < data.length; i++){									
+								$('#map_canvas').gmap('addMarker', {'position': data[i].latitude+","+data[i].longitude, 'bounds': false, 'content': data[i].name}).click(function(){
+									$('#map_canvas').gmap('openInfoWindow', {'content': $(this)[0].content }, this);
+								});
+							}
+						});
+						$('#map_canvas').gmap('option', 'zoom', 10);
+						$.mobile.hidePageLoadingMsg();
+					},
+					error: function(faiulre){
+						console.log("nu e bun");
+						console.log(faiulre.responseText);
+                    	$.mobile.hidePageLoadingMsg();
+                	}
+                });
+			});
+		</script>
+
+		<div data-role="panel" data-display="reveal" id="patMenu">
+			<div class="ui-panel-inner">
+				<ul data-role="listview" data-inset="true" data-icon="false">
+    				<li><a href="patHome.html" data-transition="slide">Patient Home</a></li>
+    				<li><a href="patAppt.html" data-transition="slide">Appointments</a></li>
+    				<li><a href="patDoctors.html" data-transition="slide">Doctors</a></li>
+    				<li><a href="patTreatments.html" data-transition="slide">View treatments</a></li>
+				</ul>
+			</div>
+		</div>
+		<div data-role="header" data-theme="d"  >
+			<a href="#patMenu" data-icon="bars" data-iconpos="notext" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a"><span class="ui-btn-inner"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-bars ui-icon-shadow">&nbsp;</span></span></a>
+			<h1>AMPLIOVITA</h1>
+		</div>
+		<div data-role="content" style="text-align: center">
+			<h2>Ampliovita Centers</h2>
+			<br/>
+			<div id="map_canvas" style="width: 300px; height: 350px"></div>
+
+		</div>
+		 <div data-role="footer" data-position="fixed" data-theme="d">
+			<h4>Licenta Galea Cristian</h4>
+		</div>
+	</div>	
+</body>
+</html>

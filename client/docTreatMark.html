@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div data-role="page" data-add-back-btn="true" id="docTreatMark">
+		<script type="text/javascript">
+			$("#docTreatMark").bind('pageinit', function(){
+				$("#delTreatBtn").bind('tap', function(){
+					$.mobile.showPageLoadingMsg();
+					$.ajax({
+						type: "GET",
+						url: "http://ampliovita-service.appspot.com/deleteTreatment",
+						data: {treatmentId: $("#currentSelectedTreat").val()},
+						async: false,
+			    		success: function(data){
+			    		$.mobile.hidePageLoadingMsg();
+			    			if(data.status){
+			    				$.mobile.changePage("docViewTreatments.html", {transition: "slide"});
+			    			}
+						},
+						error: function(faiulre){
+                   			$.mobile.hidePageLoadingMsg();
+               			}
+					});
+				});
+			});
+		</script>
+		<div data-role="header"></div>
+		<div data-role="content" style="text-align: center">
+			<h3>Mark treatment as done?</h3>
+			<input type="button" value="OK" id="delTreatBtn"/>
+		</div>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div data-role="page" data-theme="d" id="patApptCreate">
+		<script type="text/javascript">
+			$("#patApptCreate").bind('pageinit', function() { 
+				$.mobile.showPageLoadingMsg();
+				$.ajax({ //call for getting the location list
+					type: "GET",
+					url: "http://ampliovita-service.appspot.com/getLocations",
+					async: false,
+					data: {},
+					success: function(data){
+						var markup = "";
+						for(var i = 0; i < data.length; i++){
+							markup +='<option value="'+data[i].name+'">'+data[i].name+'</option>';
+						}
+						$("#createAppt-location").html(markup);
+						$.mobile.hidePageLoadingMsg();
+					},
+					error: function(faiulre){
+						console.log(faiulre.responseText);
+                    	$.mobile.hidePageLoadingMsg();
+					}
+				});
+
+				$.mobile.showPageLoadingMsg();
+				$.ajax({ //call for getting the doctors list
+					type: "GET",
+					url: "http://ampliovita-service.appspot.com/getDoctorsList",
+					async: false,
+					data: {},
+					success: function(data){
+						var markup = "";
+						for(var i = 0; i < data.length; i++){
+							markup +='<option value="'+data[i].username+'">'+data[i].name+'</option>';
+						}
+						$("#createAppt-doctor").html(markup);
+						$.mobile.hidePageLoadingMsg();
+					},
+					error: function(faiulre){
+						console.log(faiulre.responseText);
+                    	$.mobile.hidePageLoadingMsg();
+					}
+				});
+
+
+
+				$("#createAppt-btn").bind('tap', function(){
+					var allFilled = true;
+
+					if(allFilled && $("#createAppt-doctor").val().trim() == "0"){
+						allFilled = false;
+					}else if(allFilled && $("#createAppt-datetime").val().trim() == ""){
+						allFilled = false;	
+					}else if(allFilled && $("#createAppt-location").val().trim() == "0"){
+						allFilled = false;	
+					}else if(allFilled && $("#createAppt-comment").val().trim() == ""){
+						allFilled = false;	
+					}
+
+					if(!allFilled){
+						$.mobile.changePage( "patApptCreateSelectError.html", { role: "dialog", transition: "pop" } );
+					}else{
+						//submit appt
+						$.mobile.showPageLoadingMsg();
+						$.ajax({
+							type: "GET",
+							url: "http://ampliovita-service.appspot.com/createAppt",
+							async: false,
+							data: {patientId: $("#currentLogedPatientId").val(), doctorId: $("#createAppt-doctor").val().trim(), location: $("#createAppt-location").val().trim(), datetime: moment.utc($("#createAppt-datetime").val().trim()).format("L hh:mm A"), comment: $("#createAppt-comment").val().trim() },
+							success: function(data){
+								if(data.status){
+									$.mobile.hidePageLoadingMsg();
+									$.mobile.changePage( "patAppt.html", { transition: "slide" } );
+								}else{
+									$.mobile.hidePageLoadingMsg();
+									$.mobile.changePage( "patApptCreateUnavailableError.html", { role: "dialog", transition: "pop" } );
+								}
+							},
+							error: function(faiulre){
+								console.log(faiulre.responseText);
+                    			$.mobile.hidePageLoadingMsg();
+							}
+						});
+					}
+				});
+			});
+		</script>
+		<div data-role="panel" data-display="reveal" id="patMenu">
+			<div class="ui-panel-inner">
+				<ul data-role="listview" data-inset="true" data-icon="false">
+    				<li><a href="patHome.html" data-transition="slide">Patient Home</a></li>
+    				<li><a href="patDoctors.html" data-transition="slide">Doctors</a></li>
+    				<li><a href="patTreatments.html" data-transition="slide">View treatments</a></li>
+    				<li><a href="patLocations.html" data-transition="slide">Locations</a></li>
+				</ul>
+			</div>
+		</div>
+		<div data-role="header" data-theme="d"  >
+			<a href="#patMenu" data-icon="bars" data-iconpos="notext" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a"><span class="ui-btn-inner"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-bars ui-icon-shadow">&nbsp;</span></span></a>
+			<h1>AMPLIOVITA</h1>
+		</div>
+		<div data-role="content">
+			<h4>Create new appointment</h4>
+			
+			<label for="createAppt-doctor">Doctor</label>
+			<select name="createAppt-doctor" id="createAppt-doctor">
+				<option selected="selected" value="0">choose</option>
+			</select>
+
+			<label for="createAppt-datetime">Date and time</label>
+			<input type="datetime-local" data-clear-btn="true" name="createAppt-datetime" id="createAppt-datetime" value="" />
+
+			<label for="createAppt-location">Location</label>
+			<select name="createAppt-location" id="createAppt-location">
+				<option selected="selected" value="0">choose</option>
+			</select>
+
+			<label for="createAppt-comment">Comment</label>
+			<input type="text" data-clear-btn="true" name="createAppt-comment" id="createAppt-comment" />
+
+			<input type="button" id="createAppt-btn" value="Create" data-theme="a" />
+		</div>
+		<div data-role="footer"   data-theme="d">
+			<h4>Licenta Galea Cristian</h4>
+		</div>
+	</div>
+</body>
+</html>

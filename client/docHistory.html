@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div data-role="page" data-theme="d" id="docHistory">
+		<script type="text/javascript">
+			$("#docHistory").bind('pageinit', function(){
+				$.mobile.showPageLoadingMsg();
+				$.ajax({
+					type: "GET",
+					url: "http://ampliovita-service.appspot.com/getHistory",
+					data: {doctorId: $("#currentLogedDoctorId").val()},
+					async: false,
+					success: function(data){
+						var markup = "";
+						if (data.length == 0) {
+							markup = '<p style="margin: auto">You have no old treatments</p>';
+							$("#doctor-treat-his").html(markup);
+						}else{
+							for (var i = 0; i < data.length; i++) {
+								var medsList = data[i].meds.split(',');
+								var dosagesList = data[i].dosages.split(',');
+
+								markup += '<li data-icon="false"><a href="#">';
+								markup += '<img src="images/treat-old-icon.png">';
+								markup += '<input type="hidden" value="' + data[i].treatmentId + '" id="treatmentId" >';
+								markup += '<h2>'+ data[i].patientId +'</h2>';
+								markup += '<p style="font-weight: bold; color: #C00">' + data[i].diagnosis + '</p>';
+								markup += '<p style="font-weight: bold">' + data[i].duration + ' days</p>';
+								markup += '<p>' + moment.utc(data[i].datetime).format('LLL') + '</p>';
+								for(var j = 0; j < medsList.length; j++){
+									markup += '<p style="font-weight: bold">' + medsList[j] + '</p>';
+									markup += '<p style="font-style: italic">' + dosagesList[j] + '</p>';
+								}
+								markup += '</a></li>';
+								$("#docTreatHisList").html(markup);
+								$("#docTreatHisList").listview('refresh');
+							};
+						};
+						$.mobile.hidePageLoadingMsg();
+					},
+					error: function(faiulre){
+                    	$.mobile.hidePageLoadingMsg();
+                	}
+				});
+			});
+		</script>
+		<div data-role="panel" data-display="reveal" id="docMenu">
+			<div class="ui-panel-inner">
+				<ul data-role="listview" data-inset="true" data-icon="false">
+    				<li><a href="docHome.html" data-transition="slide">Doctor Home</a></li>
+    				<li><a href="docAppt.html" data-transition="slide">Appointments</a></li>
+    				<li><a href="docAddTreatment.html" data-transition="slide">Add treatment</a></li>
+    				<li><a href="docViewTreatments.html" data-transition="slide">View treatments</a></li>
+				</ul>
+			</div>
+		</div>
+		<div data-role="header" data-theme="d"  >
+			<a href="#docMenu" data-icon="bars" data-iconpos="notext" data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span" data-theme="a"><span class="ui-btn-inner"><span class="ui-btn-text"></span><span class="ui-icon ui-icon-bars ui-icon-shadow">&nbsp;</span></span></a>
+			<h1>AMPLIOVITA</h1>
+		</div>
+		<div data-role="content" style="text-align: center">
+			<h4>Treatments History</h4>
+			<div id="doctor-treat-his">
+				<ul id="docTreatHisList" data-role="listview" data-inset="true" data-theme="d" data-filter="true" data-filter-placeholder="Search old treatments..."></ul>
+			</div>
+		</div>
+		 <div data-role="footer" data-position="fixed" data-theme="d">
+			<h4>Licenta Galea Cristian</h4>
+		</div>
+	</div>
+</body>
+</html>
